@@ -222,6 +222,7 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   late Timer timer;
   List<bool> respostasCorretas = [];
   List<bool> alternativasInativas = [false, false, false, false]; // Para desabilitar alternativas erradas
+  int questoesRespondidas = 0; // Adicionar variável para contar questões respondidas
 
   void iniciarCronometro() {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -254,7 +255,8 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
 
     if (index == perguntas[perguntaAtual]['correta']) {
       setState(() {
-        pontuacao += 1000 * (perguntaAtual + 1);
+        questoesRespondidas++; // Incrementar questões respondidas
+        pontuacao += 1000 * questoesRespondidas;
         respostasCorretas.add(true);
       });
       _mostrarDialogo(
@@ -452,7 +454,8 @@ void _ajudaUniversitarios() {
         reiniciar: true,
       );
     } else {
-      iniciarCronometro();
+      timer.cancel(); // Cancel the current timer
+      iniciarCronometro(); // Restart the timer
     }
   } else {
     _mostrarDialogo(
