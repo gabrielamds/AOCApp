@@ -323,21 +323,40 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   }
 
   void _usarCarta() {
-    if (!tentarSorteDisponivel) return;
+  if (!tentarSorteDisponivel) return;
 
-    setState(() {
-      tentarSorteDisponivel = false; // Desativa a opção "Tentar a Sorte"
-    });
+  setState(() {
+    tentarSorteDisponivel = false; // Desativa a opção "Tentar a Sorte"
+  });
 
-    int cartas = Random().nextInt(4); // Gera um número aleatório entre 0 e 3
-    // Desabilita as alternativas erradas
-    for (int i = 0; i < perguntas[perguntaAtual]['alternativas'].length; i++) {
-      if (i != perguntas[perguntaAtual]['correta'] && cartas > 0) {
-        alternativasInativas[i] = true;
-        cartas--;
-      }
-    }
-  }
+  int cartas = Random().nextInt(4); // Gera um número aleatório entre 0 e 3
+
+  // Exibe a caixa de mensagem
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: const Text('Tentar a Sorte'),
+      content: Text('Serão desativadas $cartas alternativas incorretas.'),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(ctx).pop();
+            // Desabilita as alternativas erradas
+            setState(() {
+              for (int i = 0; i < perguntas[perguntaAtual]['alternativas'].length; i++) {
+                if (i != perguntas[perguntaAtual]['correta'] && cartas > 0) {
+                  alternativasInativas[i] = true;
+                  cartas--;
+                }
+              }
+            });
+          },
+          child: const Text('OK'),
+        ),
+      ],
+    ),
+  );
+}
 
   void _ajudaProfessora() {
     // Implementar lógica de ajuda da professora
