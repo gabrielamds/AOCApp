@@ -59,8 +59,41 @@ class TelaInicial extends StatelessWidget {
               },
               child: const Text('Iniciar Jogo'),
             ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                _mostrarInstrucoes(context);
+              },
+              child: const Text('Instruções'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Sair'),
+            ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _mostrarInstrucoes(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Instruções'),
+        content: const Text(
+            'Responda as perguntas corretamente para acumular pontos e se formar! '
+            'Use as ajudas disponíveis, mas cuidado com o tempo de 45 segundos por pergunta. '
+            'Boa sorte!'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: const Text('Entendido'),
+          ),
+        ],
       ),
     );
   }
@@ -102,16 +135,14 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   int perguntaAtual = 0;
   int pontuacao = 0;
   int pulosRestantes = 3;
-  bool tempoEsgotado = false;
-  late Timer timer;
   int segundosRestantes = 45;
+  bool bloqueio = false;
+  late Timer timer;
 
   void iniciarCronometro() {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (segundosRestantes == 0) {
-        setState(() {
-          tempoEsgotado = true;
-        });
+        timer.cancel();
         _tempoEsgotado();
       } else {
         setState(() {
@@ -122,25 +153,34 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   }
 
   void _tempoEsgotado() {
-    timer.cancel();
     _mostrarDialogo(
       'Tempo esgotado!',
-      'Você perdeu, mas levou R\$${pontuacao} acumulados.',
+      'Você perdeu! Sua pontuação final: R\$${pontuacao}.',
       reiniciar: true,
     );
   }
 
   void _responder(int index) {
+    if (bloqueio) return;
+
+    setState(() {
+      bloqueio = true;
+    });
     timer.cancel();
+
     if (index == perguntas[perguntaAtual]['correta']) {
       setState(() {
         pontuacao += 1000 * (perguntaAtual + 1);
       });
-      _mostrarDialogo('Acertou!', 'Você ganhou R\$${pontuacao}!', continuar: true);
+      _mostrarDialogo(
+        'Resposta Correta!',
+        'Você ganhou R\$${pontuacao}!',
+        continuar: true,
+      );
     } else {
       _mostrarDialogo(
-        'Errou!',
-        'Você perdeu. Sua pontuação final: R\$${pontuacao}.',
+        'Resposta Errada!',
+        'Você perdeu! Sua pontuação final: R\$${pontuacao}.',
         reiniciar: true,
       );
     }
@@ -182,6 +222,7 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
     setState(() {
       perguntaAtual++;
       segundosRestantes = 45;
+      bloqueio = false;
     });
     if (perguntaAtual >= perguntas.length) {
       _mostrarDialogo(
