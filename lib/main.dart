@@ -138,6 +138,7 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   int pulosRestantes = 3;
   int segundosRestantes = 45;
   bool bloqueio = false;
+  bool sorteUsada = false; // Nova variável para controlar o uso do botão
   late Timer timer;
   List<bool> respostasCorretas = [];
 
@@ -227,6 +228,7 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
       perguntaAtual++;
       segundosRestantes = 45;
       bloqueio = false;
+      sorteUsada = false; // Resetar para permitir usar novamente o botão em questões subsequentes
     });
     if (perguntaAtual >= perguntas.length) {
       _mostrarDialogo(
@@ -239,15 +241,33 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
     }
   }
 
-  void _usarCarta() {
-    int cartas = Random().nextInt(4); // Gera um número aleatório entre 0 e 3
-    int alternativasEliminadas = cartas;
+  void _tentarSorte() {
+    if (bloqueio || sorteUsada) return; // Impede o uso múltiplo do botão
 
-    // Eliminar alternativas conforme o número da carta
-    // ...
     setState(() {
-      respostasCorretas.clear();
-      // Atualize a tela com o número de alternativas eliminadas
+      sorteUsada = true; // Marcar como usada
+      bloqueio = true;
+    });
+
+    int alternativasErradas = perguntas[perguntaAtual]['alternativas'].length - 1; // Total de alternativas erradas (exceto a correta)
+    int eliminadas = Random().nextInt(alternativasErradas + 1); // Sorteia entre 0 a X alternativas erradas a eliminar
+
+    setState(() {
+      // Remover alternativas erradas
+      List<String> alternativas = List.from(perguntas[perguntaAtual]['alternativas']);
+      List<String> alternativasErradas = List.from(alternativas);
+      alternativasErradas.removeAt(perguntas[perguntaAtual]['correta']); // Remove a alternativa correta
+
+      for (int i = 0; i < eliminadas; i++) {
+        alternativasErradas.removeAt(Random().nextInt(alternativasErradas.length)); // Remove aleatoriamente
+      }
+
+      // Atualiza a lista de alternativas com as eliminadas
+      perguntas[perguntaAtual]['alternativas'] = alternativas.where((alt) => !alternativasErradas.contains(alt)).toList();
+    });
+
+    setState(() {
+      bloqueio = false;
     });
   }
 
@@ -319,9 +339,10 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
+            // Mostrar alternativas restantes
             ...List.generate(pergunta['alternativas'].length, (index) {
               return ElevatedButton(
-                onPressed: () => _responder(index),
+                onPressed: bloqueio ? null : () => _responder(index), // Desabilita durante o bloqueio
                 child: Text(pergunta['alternativas'][index]),
               );
             }),
@@ -329,8 +350,8 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
             Text('Tempo restante: $segundosRestantes segundos'),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _usarCarta,
-              child: const Text('Usar Carta'),
+              onPressed: sorteUsada || bloqueio ? null : _tentarSorte, // Desabilita o botão se já usado
+              child: const Text('Tentar a Sorte'),
             ),
             ElevatedButton(
               onPressed: _ajudaProfessora,
