@@ -130,6 +130,86 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
       ],
       'correta': 0,
     },
+    {
+      'texto': 'Qual a função do processador em um computador?',
+      'alternativas': [
+        'Armazenar dados permanentemente.',
+        'Armazenar dados temporariamente para acesso rápido.',
+        'Processar dados gráficos.',
+        'Executar instruções e cálculos.',
+      ],
+      'correta': 3,
+    },
+    {
+      'texto': 'O que é um sistema operacional?',
+      'alternativas': [
+        'Um tipo de memória secundária.',
+        'Um componente responsável pela energia.',
+        'O processador do sistema.',
+        'Um software que gerencia recursos do computador.',
+      ],
+      'correta': 3,
+    },
+    {
+      'texto': 'Qual a função de um HD em um computador?',
+      'alternativas': [
+        'Armazenar dados temporariamente para acesso rápido.',
+        'Armazenar dados permanentemente.',
+        'Processar dados gráficos.',
+        'Controlar os periféricos do sistema.',
+      ],
+      'correta': 1,
+    },
+    {
+      'texto': 'O que é um periférico de entrada?',
+      'alternativas': [
+        'Um dispositivo que envia dados para o computador.',
+        'Um dispositivo que recebe dados do computador.',
+        'Um dispositivo que armazena dados.',
+        'Um dispositivo que processa dados.',
+      ],
+      'correta': 0,
+    },
+    {
+      'texto': 'O que é um periférico de saída?',
+      'alternativas': [
+        'Um dispositivo que envia dados para o computador.',
+        'Um dispositivo que recebe dados do computador.',
+        'Um dispositivo que armazena dados.',
+        'Um dispositivo que processa dados.',
+      ],
+      'correta': 1,
+    },
+    {
+      'texto': 'O que é um periférico de armazenamento?',
+      'alternativas': [
+        'Um dispositivo que envia dados para o computador.',
+        'Um dispositivo que recebe dados do computador.',
+        'Um dispositivo que armazena dados.',
+        'Um dispositivo que processa dados.',
+      ],
+      'correta': 2,
+    },
+    {
+      'texto': 'O que é um periférico de processamento?',
+      'alternativas': [
+        'Um dispositivo que envia dados para o computador.',
+        'Um dispositivo que recebe dados do computador.',
+        'Um dispositivo que armazena dados.',
+        'Um dispositivo que processa dados.',
+      ],
+      'correta': 3,
+    },
+    {
+      'texto': 'O que é um periférico de comunicação?',
+      'alternativas': [
+        'Um dispositivo que envia dados para o computador.',
+        'Um dispositivo que recebe dados do computador.',
+        'Um dispositivo que armazena dados.',
+        'Um dispositivo que processa dados.',
+      ],
+      'correta': 0,
+    },
     // Adicione mais perguntas...
   ];
 
@@ -321,31 +401,38 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               pergunta['texto'],
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
+            // Exibe as alternativas
             ...List.generate(pergunta['alternativas'].length, (index) {
-              return ElevatedButton(
-                onPressed: alternativasInativas[index] ? null : () => _responder(index),
-                child: Text(pergunta['alternativas'][index]),
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: ElevatedButton(
+                  onPressed: alternativasInativas[index] ? null : () => _responder(index),
+                  child: Text(pergunta['alternativas'][index]),
+                ),
               );
             }),
             const SizedBox(height: 20),
-            Row(
+            // Exibe os botões abaixo das alternativas
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ElevatedButton(
                   onPressed: tentarSorteDisponivel ? _usarCarta : null,
                   child: const Text('Tentar a Sorte'),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: _pularQuestao,
                   child: Text('Pular Questão (${pulosRestantes} pulos restantes)'),
                 ),
-                const Spacer(),
+                const SizedBox(height: 10),
                 Text('Tempo: $segundosRestantes s'),
               ],
             ),
