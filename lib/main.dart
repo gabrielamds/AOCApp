@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 void main() {
   runApp(const QuemQuerSerEngenheiro());
@@ -138,6 +139,7 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   int segundosRestantes = 45;
   bool bloqueio = false;
   late Timer timer;
+  List<bool> respostasCorretas = [];
 
   void iniciarCronometro() {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -171,6 +173,7 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
     if (index == perguntas[perguntaAtual]['correta']) {
       setState(() {
         pontuacao += 1000 * (perguntaAtual + 1);
+        respostasCorretas.add(true);
       });
       _mostrarDialogo(
         'Resposta Correta!',
@@ -178,6 +181,7 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
         continuar: true,
       );
     } else {
+      respostasCorretas.add(false);
       _mostrarDialogo(
         'Resposta Errada!',
         'Você perdeu! Sua pontuação final: R\$${pontuacao}.',
@@ -235,6 +239,57 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
     }
   }
 
+  void _usarCarta() {
+    int cartas = Random().nextInt(4); // Gera um número aleatório entre 0 e 3
+    int alternativasEliminadas = cartas;
+
+    // Eliminar alternativas conforme o número da carta
+    // ...
+    setState(() {
+      respostasCorretas.clear();
+      // Atualize a tela com o número de alternativas eliminadas
+    });
+  }
+
+  void _ajudaProfessora() {
+    // Implementar lógica de ajuda da professora
+    setState(() {
+      respostasCorretas.clear();
+      // Exiba a resposta correta dada pela professora
+    });
+  }
+
+  void _ajudaUniversitarios() {
+    // Implementar lógica de ajuda dos universitários
+    setState(() {
+      respostasCorretas.clear();
+      // Exiba a ajuda dos universitários
+    });
+  }
+
+  void _pularQuestao() {
+    if (pulosRestantes > 0) {
+      setState(() {
+        pulosRestantes--;
+        perguntaAtual++;
+      });
+    } else {
+      _mostrarDialogo(
+        'Sem pulos restantes!',
+        'Você não pode pular mais questões.',
+        reiniciar: false,
+      );
+    }
+  }
+
+  void _parar() {
+    _mostrarDialogo(
+      'Você Parou!',
+      'Você acumulou R\$${pontuacao}. Obrigado por jogar!',
+      reiniciar: true,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -272,6 +327,27 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
             }),
             const SizedBox(height: 20),
             Text('Tempo restante: $segundosRestantes segundos'),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _usarCarta,
+              child: const Text('Usar Carta'),
+            ),
+            ElevatedButton(
+              onPressed: _ajudaProfessora,
+              child: const Text('Pedir ajuda da professora'),
+            ),
+            ElevatedButton(
+              onPressed: _ajudaUniversitarios,
+              child: const Text('Ajuda dos universitários'),
+            ),
+            ElevatedButton(
+              onPressed: _pularQuestao,
+              child: const Text('Pular Questão'),
+            ),
+            ElevatedButton(
+              onPressed: _parar,
+              child: const Text('Parar Jogo'),
+            ),
           ],
         ),
       ),
