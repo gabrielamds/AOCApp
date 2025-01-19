@@ -138,28 +138,10 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   int pulosRestantes = 3;
   int segundosRestantes = 45;
   bool bloqueio = false;
-  bool sorteUsada = false; // Nova variável para controlar o uso do botão
+  bool tentarSorteDisponivel = true; // Para controlar se "Tentar a Sorte" pode ser usado
   late Timer timer;
   List<bool> respostasCorretas = [];
-
-  // Variável para garantir que a opção "Tentar a sorte" seja usada uma única vez no jogo inteiro
-  bool sorteUtilizadaNoJogo = false;
-
-  bool _botaoTentarSorteAtivo = true;
-  List<int> alternativasRestantes = [];
-
-  @override
-  void initState() {
-    super.initState();
-    iniciarCronometro();
-    alternativasRestantes = List.generate(perguntas[perguntaAtual]['alternativas'].length, (index) => index);
-  }
-
-  @override
-  void dispose() {
-    timer.cancel();
-    super.dispose();
-  }
+  List<bool> alternativasInativas = [false, false, false, false]; // Para desabilitar alternativas erradas
 
   void iniciarCronometro() {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -247,7 +229,7 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
       perguntaAtual++;
       segundosRestantes = 45;
       bloqueio = false;
-      sorteUsada = false; // Resetar para permitir usar novamente o botão em questões subsequentes
+      alternativasInativas = [false, false, false, false]; // Reativa todas as alternativas
     });
     if (perguntaAtual >= perguntas.length) {
       _mostrarDialogo(
@@ -260,29 +242,21 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
     }
   }
 
-  void _tentarSorte() {
-    if (!_botaoTentarSorteAtivo) return;
+  void _usarCarta() {
+    if (!tentarSorteDisponivel) return;
 
     setState(() {
-      _botaoTentarSorteAtivo = false;
-      sorteUsada = true;
-      sorteUtilizadaNoJogo = true;
+      tentarSorteDisponivel = false; // Desativa a opção "Tentar a Sorte"
     });
 
-    final random = Random();
-    final int questoesParaEliminar = random.nextInt(4); // Sorteia de 0 a 3
-
-    _eliminarQuestoesErradas(questoesParaEliminar);
-  }
-
-  void _eliminarQuestoesErradas(int quantidade) {
-    setState(() {
-      List<int> incorretas = alternativasRestantes.where((index) => index != perguntas[perguntaAtual]['correta']).toList();
-      incorretas.shuffle();
-      for (int i = 0; i < quantidade && incorretas.isNotEmpty; i++) {
-        alternativasRestantes.remove(incorretas.removeLast());
+    int cartas = Random().nextInt(4); // Gera um número aleatório entre 0 e 3
+    // Desabilita as alternativas erradas
+    for (int i = 0; i < perguntas[perguntaAtual]['alternativas'].length; i++) {
+      if (i != perguntas[perguntaAtual]['correta'] && cartas > 0) {
+        alternativasInativas[i] = true;
+        cartas--;
       }
-    });
+    }
   }
 
   void _ajudaProfessora() {
@@ -325,6 +299,18 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    iniciarCronometro();
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final pergunta = perguntas[perguntaAtual];
     return Scaffold(
@@ -341,37 +327,27 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
-            // Mostrar alternativas restantes
-            ...alternativasRestantes.map((index) {
+            ...List.generate(pergunta['alternativas'].length, (index) {
               return ElevatedButton(
-                onPressed: bloqueio ? null : () {
-                  _responder(index);
-                }, // Desabilita durante o bloqueio
+                onPressed: alternativasInativas[index] ? null : () => _responder(index),
                 child: Text(pergunta['alternativas'][index]),
               );
-            }).toList(),
+            }),
             const SizedBox(height: 20),
-            Text('Tempo restante: $segundosRestantes segundos'),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: sorteUsada || sorteUtilizadaNoJogo || bloqueio ? null : _tentarSorte, // Desabilita o botão se já usado no jogo inteiro
-              child: const Text('Tentar a Sorte'),
-            ),
-            ElevatedButton(
-              onPressed: _ajudaProfessora,
-              child: const Text('Pedir ajuda da professora'),
-            ),
-            ElevatedButton(
-              onPressed: _ajudaUniversitarios,
-              child: const Text('Ajuda dos universitários'),
-            ),
-            ElevatedButton(
-              onPressed: _pularQuestao,
-              child: const Text('Pular Questão'),
-            ),
-            ElevatedButton(
-              onPressed: _parar,
-              child: const Text('Parar Jogo'),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: tentarSorteDisponivel ? _usarCarta : null,
+                  child: const Text('Tentar a Sorte'),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: _pularQuestao,
+                  child: Text('Pular Questão (${pulosRestantes} pulos restantes)'),
+                ),
+                const Spacer(),
+                Text('Tempo: $segundosRestantes s'),
+              ],
             ),
           ],
         ),
