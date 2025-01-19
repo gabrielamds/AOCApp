@@ -390,10 +390,31 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   }
 
   void _parar() {
-    _mostrarDialogo(
-      'Você Parou!',
-      'Você acumulou R\$${pontuacao}. Obrigado por jogar!',
-      reiniciar: true,
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Parar o Jogo'),
+        content: const Text('Você tem certeza que deseja parar o jogo?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: const Text('Não'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              _mostrarDialogo(
+                'Você Parou!',
+                'Você acumulou R\$${pontuacao}. Obrigado por jogar!',
+                reiniciar: true,
+              );
+            },
+            child: const Text('Sim'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -449,7 +470,12 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
                 const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: _pularQuestao,
-                  child: Text('Pular Questão (${pulosRestantes} pulos restantes)'),
+                  child: Text('Pular Questão (${pulosRestantes})'),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: _parar,
+                  child: const Text('Parar'),
                 ),
                 const SizedBox(height: 10),
                 Text('Tempo: $segundosRestantes s'),
