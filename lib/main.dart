@@ -142,6 +142,9 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   late Timer timer;
   List<bool> respostasCorretas = [];
 
+  // Variável para garantir que a opção "Tentar a sorte" seja usada uma única vez no jogo inteiro
+  bool sorteUtilizadaNoJogo = false;
+
   void iniciarCronometro() {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (segundosRestantes == 0) {
@@ -242,10 +245,11 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   }
 
   void _tentarSorte() {
-    if (bloqueio || sorteUsada) return; // Impede o uso múltiplo do botão
+    if (bloqueio || sorteUtilizadaNoJogo) return; // Impede o uso múltiplo do botão
 
     setState(() {
-      sorteUsada = true; // Marcar como usada
+      sorteUtilizadaNoJogo = true; // Marca como utilizado no jogo inteiro
+      sorteUsada = true; // Marca como usado na questão atual
       bloqueio = true;
     });
 
@@ -342,7 +346,15 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
             // Mostrar alternativas restantes
             ...List.generate(pergunta['alternativas'].length, (index) {
               return ElevatedButton(
-                onPressed: bloqueio ? null : () => _responder(index), // Desabilita durante o bloqueio
+                onPressed: bloqueio ? null : () {
+                  // Verificar se a resposta correta foi dada
+                  if (index == pergunta['correta']) {
+                    _responder(index);
+                  } else {
+                    // Mostra a mensagem de resposta errada, mas é tratado no fluxo do código
+                    _responder(index);
+                  }
+                }, // Desabilita durante o bloqueio
                 child: Text(pergunta['alternativas'][index]),
               );
             }),
@@ -350,7 +362,7 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
             Text('Tempo restante: $segundosRestantes segundos'),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: sorteUsada || bloqueio ? null : _tentarSorte, // Desabilita o botão se já usado
+              onPressed: sorteUsada || sorteUtilizadaNoJogo || bloqueio ? null : _tentarSorte, // Desabilita o botão se já usado no jogo inteiro
               child: const Text('Tentar a Sorte'),
             ),
             ElevatedButton(
