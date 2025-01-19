@@ -145,6 +145,22 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   // Variável para garantir que a opção "Tentar a sorte" seja usada uma única vez no jogo inteiro
   bool sorteUtilizadaNoJogo = false;
 
+  bool _botaoTentarSorteAtivo = true;
+  List<int> alternativasRestantes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    iniciarCronometro();
+    alternativasRestantes = List.generate(perguntas[perguntaAtual]['alternativas'].length, (index) => index);
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
   void iniciarCronometro() {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (segundosRestantes == 0) {
@@ -245,33 +261,27 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   }
 
   void _tentarSorte() {
-    if (bloqueio || sorteUtilizadaNoJogo) return; // Impede o uso múltiplo do botão
+    if (!_botaoTentarSorteAtivo) return;
 
     setState(() {
-      sorteUtilizadaNoJogo = true; // Marca como utilizado no jogo inteiro
-      sorteUsada = true; // Marca como usado na questão atual
-      bloqueio = true;
+      _botaoTentarSorteAtivo = false;
+      sorteUsada = true;
+      sorteUtilizadaNoJogo = true;
     });
 
-    int alternativasErradas = perguntas[perguntaAtual]['alternativas'].length - 1; // Total de alternativas erradas (exceto a correta)
-    int eliminadas = Random().nextInt(alternativasErradas + 1); // Sorteia entre 0 a X alternativas erradas a eliminar
+    final random = Random();
+    final int questoesParaEliminar = random.nextInt(4); // Sorteia de 0 a 3
 
+    _eliminarQuestoesErradas(questoesParaEliminar);
+  }
+
+  void _eliminarQuestoesErradas(int quantidade) {
     setState(() {
-      // Remover alternativas erradas
-      List<String> alternativas = List.from(perguntas[perguntaAtual]['alternativas']);
-      List<String> alternativasErradas = List.from(alternativas);
-      alternativasErradas.removeAt(perguntas[perguntaAtual]['correta']); // Remove a alternativa correta
-
-      for (int i = 0; i < eliminadas; i++) {
-        alternativasErradas.removeAt(Random().nextInt(alternativasErradas.length)); // Remove aleatoriamente
+      List<int> incorretas = alternativasRestantes.where((index) => index != perguntas[perguntaAtual]['correta']).toList();
+      incorretas.shuffle();
+      for (int i = 0; i < quantidade && incorretas.isNotEmpty; i++) {
+        alternativasRestantes.remove(incorretas.removeLast());
       }
-
-      // Atualiza a lista de alternativas com as eliminadas
-      perguntas[perguntaAtual]['alternativas'] = alternativas.where((alt) => !alternativasErradas.contains(alt)).toList();
-    });
-
-    setState(() {
-      bloqueio = false;
     });
   }
 
@@ -315,18 +325,6 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    iniciarCronometro();
-  }
-
-  @override
-  void dispose() {
-    timer.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final pergunta = perguntas[perguntaAtual];
     return Scaffold(
@@ -344,20 +342,14 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
             ),
             const SizedBox(height: 20),
             // Mostrar alternativas restantes
-            ...List.generate(pergunta['alternativas'].length, (index) {
+            ...alternativasRestantes.map((index) {
               return ElevatedButton(
                 onPressed: bloqueio ? null : () {
-                  // Verificar se a resposta correta foi dada
-                  if (index == pergunta['correta']) {
-                    _responder(index);
-                  } else {
-                    // Mostra a mensagem de resposta errada, mas é tratado no fluxo do código
-                    _responder(index);
-                  }
+                  _responder(index);
                 }, // Desabilita durante o bloqueio
                 child: Text(pergunta['alternativas'][index]),
               );
-            }),
+            }).toList(),
             const SizedBox(height: 20),
             Text('Tempo restante: $segundosRestantes segundos'),
             const SizedBox(height: 20),
