@@ -5,223 +5,86 @@ void main() {
 }
 
 class QuemQuerSerEngenheiro extends StatelessWidget {
-  const QuemQuerSerEngenheiro({Key? key}) : super(key: key);
+  const QuemQuerSerEngenheiro({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Quem Quer Ser um Engenheiro?',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
+      ),
       home: const TelaInicial(),
     );
   }
 }
 
+// Tela Inicial
 class TelaInicial extends StatelessWidget {
-  const TelaInicial({Key? key}) : super(key: key);
+  const TelaInicial({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Quem Quer Ser um Engenheiro?')),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const TelaPerguntas()),
-            );
-          },
-          child: const Text('Começar Jogo'),
-        ),
-      ),
-    );
-  }
-}
-
-class TelaPerguntas extends StatefulWidget {
-  const TelaPerguntas({Key? key}) : super(key: key);
-
-  @override
-  State<TelaPerguntas> createState() => _TelaPerguntasState();
-}
-
-class _TelaPerguntasState extends State<TelaPerguntas> {
-  // Dados do jogo: perguntas organizadas por etapas
-  final List<List<Map<String, dynamic>>> etapas = [
-    // Etapa 1
-    [
-      {
-        "pergunta": "O que é a ALU?",
-        "opcoes": [
-          "Unidade Lógica e Aritmética",
-          "Unidade de Memória",
-          "Processador",
-          "Unidade de Controle"
-        ],
-        "resposta_correta": 0,
-      },
-      {
-        "pergunta": "O que é uma memória RAM?",
-        "opcoes": [
-          "Memória secundária",
-          "Memória de acesso rápido",
-          "Memória não volátil",
-          "Memória de armazenamento permanente"
-        ],
-        "resposta_correta": 1,
-      },
-      // Adicione mais perguntas da Etapa 1...
-    ],
-    // Etapa 2
-    [
-      {
-        "pergunta": "O que é um registrador?",
-        "opcoes": [
-          "Um tipo de processador",
-          "Uma memória interna rápida",
-          "Um controlador de barramento",
-          "Uma placa de rede"
-        ],
-        "resposta_correta": 1,
-      },
-      // Adicione perguntas da Etapa 2...
-    ],
-    // Etapa Final
-    [
-      {
-        "pergunta": "Quem criou a arquitetura von Neumann?",
-        "opcoes": [
-          "Alan Turing",
-          "John von Neumann",
-          "Ada Lovelace",
-          "Niklaus Wirth"
-        ],
-        "resposta_correta": 1,
-      },
-    ],
-  ];
-
-  int etapaAtual = 0; // Controla a etapa atual
-  int perguntaAtual = 0; // Índice da pergunta dentro da etapa
-  int pontuacao = 0; // Pontuação acumulada
-  int valorPergunta = 1000; // Valor inicial das perguntas
-  int? respostaSelecionada; // Índice da resposta selecionada
-  int ajudasRestantes = 3; // Número de ajudas disponíveis
-
-  void usarAjuda() {
-    if (ajudasRestantes > 0) {
-      setState(() {
-        ajudasRestantes--;
-        // Implementação de ajuda: remove opções incorretas visualmente
-      });
-    }
-  }
-
-  void pararJogo() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TelaResultados(
-          pontuacao: pontuacao,
-          mensagem: 'Você optou por parar!',
-        ),
-      ),
-    );
-  }
-
-  void verificarResposta() {
-    setState(() {
-      if (respostaSelecionada == etapas[etapaAtual][perguntaAtual]["resposta_correta"]) {
-        pontuacao += valorPergunta;
-        proximaPergunta();
-      } else {
-        // Penalidade: metade do valor acumulado
-        pontuacao = (pontuacao / 2).round();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TelaResultados(
-              pontuacao: pontuacao,
-              mensagem: 'Você errou!',
-            ),
+      body: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blue, Colors.lightBlueAccent],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-        );
-      }
-    });
-  }
-
-  void proximaPergunta() {
-    respostaSelecionada = null; // Reseta a seleção
-    perguntaAtual++;
-
-    if (perguntaAtual >= etapas[etapaAtual].length) {
-      if (etapaAtual == etapas.length - 1) {
-        // Final do jogo
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TelaResultados(
-              pontuacao: pontuacao,
-              mensagem: 'Parabéns, você venceu!',
-            ),
-          ),
-        );
-      } else {
-        // Próxima etapa
-        etapaAtual++;
-        perguntaAtual = 0;
-        valorPergunta *= 10; // Aumenta o valor da pergunta
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final pergunta = etapas[etapaAtual][perguntaAtual];
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Etapa ${etapaAtual + 1} - Pergunta ${perguntaAtual + 1}'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              pergunta["pergunta"],
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            ...List.generate(pergunta["opcoes"].length, (index) {
-              return ListTile(
-                title: Text(pergunta["opcoes"][index]),
-                leading: Radio<int>(
-                  value: index,
-                  groupValue: respostaSelecionada,
-                  onChanged: (value) {
-                    setState(() {
-                      respostaSelecionada = value;
-                    });
-                  },
-                ),
-              );
-            }),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: respostaSelecionada != null ? verificarResposta : null,
-              child: const Text('Confirmar'),
-            ),
-            ElevatedButton(
-              onPressed: pararJogo,
-              child: const Text('Parar'),
-            ),
-            if (ajudasRestantes > 0)
-              ElevatedButton(
-                onPressed: usarAjuda,
-                child: Text('Usar Ajuda ($ajudasRestantes restantes)'),
+            const Text(
+              'Quem Quer Ser um Engenheiro?',
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 50),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const TelaPerguntas()),
+                );
+              },
+              child: const Text('Iniciar Jogo'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: const Text('Instruções'),
+                    content: const Text(
+                      'Responda as perguntas corretamente e use as ajudas quando necessário. '
+                      'O objetivo final é acumular conhecimento e passar na matéria!',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(ctx).pop();
+                        },
+                        child: const Text('Entendi!'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              child: const Text('Instruções'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Sair'),
+            ),
           ],
         ),
       ),
@@ -229,31 +92,148 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   }
 }
 
-class TelaResultados extends StatelessWidget {
-  final int pontuacao;
-  final String mensagem;
+// Tela de Perguntas
+class TelaPerguntas extends StatefulWidget {
+  const TelaPerguntas({super.key});
 
-  const TelaResultados({Key? key, required this.pontuacao, required this.mensagem}) : super(key: key);
+  @override
+  State<TelaPerguntas> createState() => _TelaPerguntasState();
+}
+
+class _TelaPerguntasState extends State<TelaPerguntas> {
+  final List<Map<String, dynamic>> perguntas = [
+    {
+      'texto': 'Qual a principal função da memória RAM?',
+      'alternativas': [
+        'Armazenar dados permanentemente.',
+        'Armazenar dados temporariamente para acesso rápido.',
+        'Processar dados gráficos.',
+        'Controlar os periféricos do sistema.',
+      ],
+      'correta': 1,
+    },
+    {
+      'texto': 'O que é um barramento no computador?',
+      'alternativas': [
+        'Uma rota de transporte de dados entre componentes.',
+        'Um tipo de memória secundária.',
+        'O processador do sistema.',
+        'Um componente responsável pela energia.',
+      ],
+      'correta': 0,
+    },
+    // Adicione mais perguntas...
+  ];
+
+  int perguntaAtual = 0;
+  int pontuacao = 0;
+  int pulosRestantes = 3;
+
+  void responder(int index) {
+    if (index == perguntas[perguntaAtual]['correta']) {
+      setState(() {
+        pontuacao += 1000 * (perguntaAtual + 1);
+        perguntaAtual++;
+      });
+    } else {
+      _mostrarDialogo('Errou!', 'Você perdeu. Pontuação final: $pontuacao');
+    }
+  }
+
+  void pular() {
+    if (pulosRestantes > 0) {
+      setState(() {
+        perguntaAtual++;
+        pulosRestantes--;
+      });
+    } else {
+      _mostrarDialogo('Sem pulos!', 'Você já usou todos os seus pulos.');
+    }
+  }
+
+  void _mostrarDialogo(String titulo, String mensagem) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(titulo),
+        content: Text(mensagem),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (perguntaAtual >= perguntas.length) {
+      return TelaFinal(pontuacao: pontuacao);
+    }
+
+    final pergunta = perguntas[perguntaAtual];
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Pergunta Atual'),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text(
+              'Pergunta ${perguntaAtual + 1}: ${pergunta['texto']}',
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 20),
+            ...List.generate(pergunta['alternativas'].length, (index) {
+              return ElevatedButton(
+                onPressed: () => responder(index),
+                child: Text(pergunta['alternativas'][index]),
+              );
+            }),
+            const SizedBox(height: 20),
+            Text('Pulos restantes: $pulosRestantes'),
+            ElevatedButton(
+              onPressed: pular,
+              child: const Text('Pular'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Tela Final
+class TelaFinal extends StatelessWidget {
+  final int pontuacao;
+
+  const TelaFinal({super.key, required this.pontuacao});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Resultados')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              mensagem,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            const Text(
+              'Parabéns!',
+              style: TextStyle(fontSize: 24),
             ),
-            Text(
-              'Sua pontuação final: $pontuacao',
-              style: const TextStyle(fontSize: 20),
-            ),
+            Text('Sua pontuação final foi: $pontuacao'),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const TelaInicial()),
+                  (route) => false,
+                );
               },
               child: const Text('Voltar ao Início'),
             ),
