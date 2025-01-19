@@ -359,20 +359,82 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
 }
 
   void _ajudaProfessora() {
-    // Implementar lógica de ajuda da professora
-    setState(() {
-      respostasCorretas.clear();
-      // Exiba a resposta correta dada pela professora
-    });
-  }
+  showDialog(
+    context: context,
+    builder: (ctx) => StatefulBuilder(
+      builder: (context, setState) {
+        return AlertDialog(
+          title: const Text('Ajuda da Professora'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Esperando a resposta...'),
+              const SizedBox(height: 20),
+              TweenAnimationBuilder<Duration>(
+                duration: Duration(seconds: segundosRestantes),
+                tween: Tween(begin: Duration(seconds: segundosRestantes), end: Duration.zero),
+                onEnd: () {
+                  Navigator.of(ctx).pop();
+                },
+                builder: (BuildContext context, Duration value, Widget? child) {
+                  final seconds = value.inSeconds;
+                  return Text('Tempo: $seconds s');
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    ),
+  );
+}
 
-  void _ajudaUniversitarios() {
-    // Implementar lógica de ajuda dos universitários
-    setState(() {
-      respostasCorretas.clear();
-      // Exiba a ajuda dos universitários
-    });
-  }
+void _ajudaUniversitarios() {
+  showDialog(
+    context: context,
+    builder: (ctx) => StatefulBuilder(
+      builder: (context, setState) {
+        return AlertDialog(
+          title: const Text('Ajuda dos Universitários'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Esperando a resposta...'),
+              const SizedBox(height: 20),
+              TweenAnimationBuilder<Duration>(
+                duration: Duration(seconds: segundosRestantes),
+                tween: Tween(begin: Duration(seconds: segundosRestantes), end: Duration.zero),
+                onEnd: () {
+                  Navigator.of(ctx).pop();
+                },
+                builder: (BuildContext context, Duration value, Widget? child) {
+                  final seconds = value.inSeconds;
+                  return Text('Tempo: $seconds s');
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    ),
+  );
+}
 
   void _pularQuestao() {
   if (pulosRestantes > 0) {
@@ -483,6 +545,16 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
                 ElevatedButton(
                   onPressed: pulosRestantes > 0 ? _pularQuestao : null,
                   child: Text('Pular Questão (${pulosRestantes})'),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: _ajudaProfessora,
+                  child: const Text('Ajuda da Professora'),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: _ajudaUniversitarios,
+                  child: const Text('Ajuda dos Universitários'),
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton(
