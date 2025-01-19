@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -58,33 +59,6 @@ class TelaInicial extends StatelessWidget {
               },
               child: const Text('Iniciar Jogo'),
             ),
-            ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: const Text('Instruções'),
-                    content: const Text(
-                      'Responda as perguntas corretamente e use as ajudas quando necessário. '
-                      'O objetivo final é acumular conhecimento e passar na matéria!',
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(ctx).pop();
-                        },
-                        child: const Text('Entendi!'),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              child: const Text('Instruções'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Sair'),
-            ),
           ],
         ),
       ),
@@ -128,107 +102,69 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   int perguntaAtual = 0;
   int pontuacao = 0;
   int pulosRestantes = 3;
+  bool tempoEsgotado = false;
+  late Timer timer;
+  int segundosRestantes = 45;
 
-  void responder(int index) {
+  void iniciarCronometro() {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (segundosRestantes == 0) {
+        setState(() {
+          tempoEsgotado = true;
+        });
+        _tempoEsgotado();
+      } else {
+        setState(() {
+          segundosRestantes--;
+        });
+      }
+    });
+  }
+
+  void _tempoEsgotado() {
+    timer.cancel();
+    _mostrarDialogo(
+      'Tempo esgotado!',
+      'Você perdeu, mas levou R\$${pontuacao} acumulados.',
+      reiniciar: true,
+    );
+  }
+
+  void _responder(int index) {
+    timer.cancel();
     if (index == perguntas[perguntaAtual]['correta']) {
       setState(() {
         pontuacao += 1000 * (perguntaAtual + 1);
-        perguntaAtual++;
       });
+      _mostrarDialogo('Acertou!', 'Você ganhou R\$${pontuacao}!', continuar: true);
     } else {
-      _mostrarDialogo('Errou!', 'Você perdeu. Pontuação final: $pontuacao');
+      _mostrarDialogo(
+        'Errou!',
+        'Você perdeu. Sua pontuação final: R\$${pontuacao}.',
+        reiniciar: true,
+      );
     }
   }
 
-  void pular() {
-    if (pulosRestantes > 0) {
-      setState(() {
-        perguntaAtual++;
-        pulosRestantes--;
-      });
-    } else {
-      _mostrarDialogo('Sem pulos!', 'Você já usou todos os seus pulos.');
-    }
-  }
-
-  void _mostrarDialogo(String titulo, String mensagem) {
+  void _mostrarDialogo(String titulo, String mensagem, {bool continuar = false, bool reiniciar = false}) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(titulo),
         content: Text(mensagem),
         actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (perguntaAtual >= perguntas.length) {
-      return TelaFinal(pontuacao: pontuacao);
-    }
-
-    final pergunta = perguntas[perguntaAtual];
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pergunta Atual'),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(
-              'Pergunta ${perguntaAtual + 1}: ${pergunta['texto']}',
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 20),
-            ...List.generate(pergunta['alternativas'].length, (index) {
-              return ElevatedButton(
-                onPressed: () => responder(index),
-                child: Text(pergunta['alternativas'][index]),
-              );
-            }),
-            const SizedBox(height: 20),
-            Text('Pulos restantes: $pulosRestantes'),
-            ElevatedButton(
-              onPressed: pular,
-              child: const Text('Pular'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Tela Final
-class TelaFinal extends StatelessWidget {
-  final int pontuacao;
-
-  const TelaFinal({super.key, required this.pontuacao});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Parabéns!',
-              style: TextStyle(fontSize: 24),
-            ),
-            Text('Sua pontuação final foi: $pontuacao'),
-            ElevatedButton(
+          if (continuar)
+            TextButton(
               onPressed: () {
+                Navigator.of(ctx).pop();
+                _proximaPergunta();
+              },
+              child: const Text('Continuar'),
+            ),
+          if (reiniciar)
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => const TelaInicial()),
@@ -237,6 +173,64 @@ class TelaFinal extends StatelessWidget {
               },
               child: const Text('Voltar ao Início'),
             ),
+        ],
+      ),
+    );
+  }
+
+  void _proximaPergunta() {
+    setState(() {
+      perguntaAtual++;
+      segundosRestantes = 45;
+    });
+    if (perguntaAtual >= perguntas.length) {
+      _mostrarDialogo(
+        'Parabéns!',
+        'Você concluiu o jogo com R\$${pontuacao}!',
+        reiniciar: true,
+      );
+    } else {
+      iniciarCronometro();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    iniciarCronometro();
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final pergunta = perguntas[perguntaAtual];
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Pergunta ${perguntaAtual + 1}'),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text(
+              pergunta['texto'],
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 20),
+            ...List.generate(pergunta['alternativas'].length, (index) {
+              return ElevatedButton(
+                onPressed: () => _responder(index),
+                child: Text(pergunta['alternativas'][index]),
+              );
+            }),
+            const SizedBox(height: 20),
+            Text('Tempo restante: $segundosRestantes segundos'),
           ],
         ),
       ),
