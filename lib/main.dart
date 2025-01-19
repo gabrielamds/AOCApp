@@ -375,19 +375,31 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   }
 
   void _pularQuestao() {
-    if (pulosRestantes > 0) {
-      setState(() {
-        pulosRestantes--;
-        perguntaAtual++;
-      });
-    } else {
+  if (pulosRestantes > 0) {
+    setState(() {
+      pulosRestantes--;
+      perguntaAtual++;
+      segundosRestantes = 45;
+      bloqueio = false;
+      alternativasInativas = [false, false, false, false]; // Reativa todas as alternativas
+    });
+    if (perguntaAtual >= perguntas.length) {
       _mostrarDialogo(
-        'Sem pulos restantes!',
-        'Você não pode pular mais questões.',
-        reiniciar: false,
+        'Parabéns!',
+        'Você concluiu o jogo com R\$${pontuacao}!',
+        reiniciar: true,
       );
+    } else {
+      iniciarCronometro();
     }
+  } else {
+    _mostrarDialogo(
+      'Sem pulos restantes!',
+      'Você não pode pular mais questões.',
+      reiniciar: false,
+    );
   }
+}
 
   void _parar() {
     showDialog(
@@ -469,7 +481,7 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: _pularQuestao,
+                  onPressed: pulosRestantes > 0 ? _pularQuestao : null,
                   child: Text('Pular Questão (${pulosRestantes})'),
                 ),
                 const SizedBox(height: 10),
