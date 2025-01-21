@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'dart:io'; // Import the dart:io package
 
 void main() {
   runApp(const QuemQuerSerEngenheiro());
@@ -69,7 +70,7 @@ class TelaInicial extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => exit(0), // Exit the application
               child: const Text('Sair'),
             ),
           ],
