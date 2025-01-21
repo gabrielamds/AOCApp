@@ -749,37 +749,45 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
               ],
             ),
             const SizedBox(height: 20),
+            // Exibe o cronômetro
+            Text(
+              'Tempo: $segundosRestantes s',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
             // Exibe os botões abaixo das alternativas
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ElevatedButton(
-                  onPressed: tentarSorteDisponivel ? _usarCarta : null,
-                  child: const Text('Tentar a Sorte'),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ElevatedButton(
+                      onPressed: tentarSorteDisponivel ? _usarCarta : null,
+                      child: const Text('Tentar a Sorte'),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: pulosRestantes > 0 ? _pularQuestao : null,
+                      child: Text('Pular Questão (${pulosRestantes})'),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: ajudaProfessoraDisponivel ? _ajudaProfessora : null,
+                      child: const Text('Ajuda da Professora'),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: ajudaUniversitariosDisponivel ? _ajudaUniversitarios : null,
+                      child: const Text('Ajuda dos Universitários'),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: _parar,
+                      child: const Text('Parar'),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: pulosRestantes > 0 ? _pularQuestao : null,
-                  child: Text('Pular Questão (${pulosRestantes})'),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: ajudaProfessoraDisponivel ? _ajudaProfessora : null,
-                  child: const Text('Ajuda da Professora'),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: ajudaUniversitariosDisponivel ? _ajudaUniversitarios : null,
-                  child: const Text('Ajuda dos Universitários'),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: _parar,
-                  child: const Text('Parar'),
-                ),
-                const SizedBox(height: 10),
-                Text('Tempo: $segundosRestantes s'),
-              ],
+              ),
             ),
           ],
         ),
