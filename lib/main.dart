@@ -225,6 +225,7 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   List<bool> respostasCorretas = [];
   List<bool> alternativasInativas = [false, false, false, false]; // Para desabilitar alternativas erradas
   int questoesRespondidas = 0; // Adicionar variável para contar questões respondidas
+  int nota = 0; // Adicionar variável para a nota
 
   void iniciarCronometro() {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -242,7 +243,7 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   void _tempoEsgotado() {
     _mostrarDialogo(
       'Tempo esgotado!',
-      'Você perdeu! Sua pontuação final: R\$${pontuacao}.',
+      'Você perdeu! Sua nota final: $nota.',
       reiniciar: true,
     );
   }
@@ -258,19 +259,19 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
     if (index == perguntas[perguntaAtual]['correta']) {
       setState(() {
         questoesRespondidas++; // Incrementar questões respondidas
-        pontuacao += 1000 * questoesRespondidas;
+        nota = (10 * questoesRespondidas / perguntas.length).round(); // Calcular a nota
         respostasCorretas.add(true);
       });
       _mostrarDialogo(
         'Resposta Correta!',
-        'Você ganhou R\$${pontuacao}!',
+        'Sua nota atual: $nota.',
         continuar: true,
       );
     } else {
       respostasCorretas.add(false);
       _mostrarDialogo(
         'Resposta Errada!',
-        'Você perdeu! Sua pontuação final: R\$${pontuacao}.',
+        'Você perdeu! Sua nota final: $nota.',
         reiniciar: true,
       );
     }
@@ -318,7 +319,7 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
     if (perguntaAtual >= perguntas.length) {
       _mostrarDialogo(
         'Parabéns!',
-        'Você concluiu o jogo com R\$${pontuacao}!',
+        'Você concluiu o jogo com nota $nota!',
         reiniciar: true,
       );
     } else {
@@ -464,7 +465,7 @@ void _ajudaUniversitarios() {
     if (perguntaAtual >= perguntas.length) {
       _mostrarDialogo(
         'Parabéns!',
-        'Você concluiu o jogo com R\$${pontuacao}!',
+        'Você concluiu o jogo com nota $nota!',
         reiniciar: true,
       );
     } else {
@@ -498,7 +499,7 @@ void _ajudaUniversitarios() {
               Navigator.of(ctx).pop();
               _mostrarDialogo(
                 'Você Parou!',
-                'Você acumulou R\$${pontuacao}. Obrigado por jogar!',
+                'Sua nota final: $nota. Obrigado por jogar!',
                 reiniciar: true,
               );
             },
