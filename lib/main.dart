@@ -372,10 +372,9 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
         respostasCorretas.add(true);
       });
       if (nota >= 10) {
-        _mostrarDialogo(
-          'Parabéns!',
-          'Você tirou ${nota.toStringAsFixed(2)} na prova de AOC! Agora não precisa sofrer tanto com os trabalhos!!!',
-          reiniciar: true,
+        _mostrarTelaFinal(
+          context,
+          'Parabéns!\nVocê tirou ${nota.toStringAsFixed(2)} na prova de AOC!\nAgora não precisa sofrer tanto com os trabalhos!!!',
         );
       } else {
         _mostrarDialogo(
@@ -386,11 +385,19 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
       }
     } else {
       respostasCorretas.add(false);
-      _mostrarDialogo(
-        'Resposta Errada!',
-        'Você perdeu! Sua nota final: ${nota.toStringAsFixed(2)}.',
-        reiniciar: true,
-      );
+      if (nota >= 6) {
+        _mostrarDialogo(
+          'Resposta Errada!',
+          'Você perdeu! Mas pelo menos você tirou ${nota.toStringAsFixed(2)}! Ainda da para passar ein!',
+          reiniciar: true,
+        );
+      } else {
+        _mostrarDialogo(
+          'Resposta Errada!',
+          'Você perdeu! Sua nota final: ${nota.toStringAsFixed(2)}.',
+          reiniciar: true,
+        );
+      }
     }
   }
 
@@ -434,10 +441,9 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
       alternativasInativas = [false, false, false, false]; // Reativa todas as alternativas
     });
     if (perguntaAtual >= perguntas.length || nota >= 10) {
-      _mostrarDialogo(
-        'Parabéns!',
-        'Você tirou ${nota.toStringAsFixed(2)} na prova de AOC! Agora não precisa sofrer tanto com os trabalhos!!!',
-        reiniciar: true,
+      _mostrarTelaFinal(
+        context,
+        'Parabéns!\nVocê tirou ${nota.toStringAsFixed(2)} na prova de AOC!\nAgora não precisa sofrer tanto com os trabalhos!!!',
       );
     } else {
       iniciarCronometro();
@@ -614,11 +620,19 @@ void _ajudaUniversitarios() {
           TextButton(
             onPressed: () {
               Navigator.of(ctx).pop();
-              _mostrarDialogo(
-                'Você Parou!',
-                'Sua nota final: ${nota.toStringAsFixed(2)}. Obrigado por jogar!',
-                reiniciar: true,
-              );
+              if (nota >= 6 && nota < 10) {
+                _mostrarDialogo(
+                  'Você Parou!',
+                  'Você perdeu! Mas pelo menos você tirou ${nota.toStringAsFixed(2)}! Ainda da para passar ein!',
+                  reiniciar: true,
+                );
+              } else {
+                _mostrarDialogo(
+                  'Você Parou!',
+                  'Sua nota final: ${nota.toStringAsFixed(2)}. Obrigado por jogar!',
+                  reiniciar: true,
+                );
+              }
             },
             child: const Text('Sim'),
           ),
@@ -626,6 +640,56 @@ void _ajudaUniversitarios() {
       ),
     );
   }
+
+void _mostrarTelaFinal(BuildContext context, String mensagem) {
+  Navigator.of(context).pushAndRemoveUntil(
+    MaterialPageRoute(
+      builder: (ctx) => Scaffold(
+        body: Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.lightBlueAccent],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.celebration,
+                color: Colors.white,
+                size: 100,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                mensagem,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 50),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(ctx).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => const TelaInicial()),
+                    (route) => false,
+                  );
+                },
+                child: const Text('Voltar ao Início'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+    (route) => false,
+  );
+}
 
   @override
   void initState() {
