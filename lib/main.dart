@@ -219,6 +219,8 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   int segundosRestantes = 45;
   bool bloqueio = false;
   bool tentarSorteDisponivel = true; // Para controlar se "Tentar a Sorte" pode ser usado
+  bool ajudaProfessoraDisponivel = true; // Para controlar se "Ajuda da Professora" pode ser usado
+  bool ajudaUniversitariosDisponivel = true; // Para controlar se "Ajuda dos Universitários" pode ser usado
   late Timer timer;
   List<bool> respostasCorretas = [];
   List<bool> alternativasInativas = [false, false, false, false]; // Para desabilitar alternativas erradas
@@ -361,6 +363,12 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
 }
 
   void _ajudaProfessora() {
+  if (!ajudaProfessoraDisponivel) return;
+
+  setState(() {
+    ajudaProfessoraDisponivel = false; // Desativa a opção "Ajuda da Professora"
+  });
+
   showDialog(
     context: context,
     builder: (ctx) => StatefulBuilder(
@@ -400,6 +408,12 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
 }
 
 void _ajudaUniversitarios() {
+  if (!ajudaUniversitariosDisponivel) return;
+
+  setState(() {
+    ajudaUniversitariosDisponivel = false; // Desativa a opção "Ajuda dos Universitários"
+  });
+
   showDialog(
     context: context,
     builder: (ctx) => StatefulBuilder(
@@ -551,12 +565,12 @@ void _ajudaUniversitarios() {
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: _ajudaProfessora,
+                  onPressed: ajudaProfessoraDisponivel ? _ajudaProfessora : null,
                   child: const Text('Ajuda da Professora'),
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: _ajudaUniversitarios,
+                  onPressed: ajudaUniversitariosDisponivel ? _ajudaUniversitarios : null,
                   child: const Text('Ajuda dos Universitários'),
                 ),
                 const SizedBox(height: 10),
