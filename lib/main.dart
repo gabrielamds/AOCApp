@@ -349,57 +349,60 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   }
 
   void _responder(int index) {
-    if (bloqueio) return;
+  if (bloqueio) return;
 
+  setState(() {
+    bloqueio = true;
+  });
+  timer.cancel();
+
+  if (index == perguntas[perguntaAtual]['correta']) {
     setState(() {
-      bloqueio = true;
+      questoesRespondidas++; // Incrementar questões respondidas
+      if (perguntaAtual < 5) {
+        pontos += 1; // Primeira rodada
+      } else if (perguntaAtual < 10) {
+        pontos += 2; // Segunda rodada
+      } else if (perguntaAtual < 15) {
+        pontos += 4; // Terceira rodada
+      } else {
+        pontos += 5; // Pergunta final
+      }
+      nota = (10 * pontos / 40).clamp(0, 10); // Calcular a nota com base nos pontos e limitar a 10
+      respostasCorretas.add(true);
     });
-    timer.cancel();
-
-    if (index == perguntas[perguntaAtual]['correta']) {
-      setState(() {
-        questoesRespondidas++; // Incrementar questões respondidas
-        if (perguntaAtual < 5) {
-          pontos += 1; // Primeira rodada
-        } else if (perguntaAtual < 10) {
-          pontos += 2; // Segunda rodada
-        } else if (perguntaAtual < 15) {
-          pontos += 4; // Terceira rodada
-        } else {
-          pontos += 5; // Pergunta final
-        }
-        nota = (10 * pontos / 40).clamp(0, 10); // Calcular a nota com base nos pontos e limitar a 10
-        respostasCorretas.add(true);
-      });
-      if (nota >= 10) {
-        _mostrarTelaFinal(
-          context,
-          'Parabéns!\nVocê tirou ${nota.toStringAsFixed(2)} na prova de AOC!\nAgora não precisa sofrer tanto com os trabalhos!!!',
-        );
-      } else {
-        _mostrarDialogo(
-          'Resposta Correta!',
-          'Sua nota atual: ${nota.toStringAsFixed(2)}.',
-          continuar: true,
-        );
-      }
+    if (nota >= 10) {
+      _mostrarTelaFinal(
+        context,
+        'Parabéns!\nVocê tirou ${nota.toStringAsFixed(2)} na prova de AOC!\nAgora não precisa sofrer tanto com os trabalhos!!!',
+      );
     } else {
-      respostasCorretas.add(false);
-      if (nota >= 6) {
-        _mostrarDialogo(
-          'Resposta Errada!',
-          'Você perdeu! Mas pelo menos você tirou ${nota.toStringAsFixed(2)}! Ainda da para passar ein!',
-          reiniciar: true,
-        );
-      } else {
-        _mostrarDialogo(
-          'Resposta Errada!',
-          'Você perdeu! Sua nota final: ${nota.toStringAsFixed(2)}.',
-          reiniciar: true,
-        );
-      }
+      _mostrarDialogo(
+        'Resposta Correta!',
+        'Sua nota atual: ${nota.toStringAsFixed(2)}.',
+        continuar: true,
+      );
+    }
+  } else {
+    setState(() {
+      nota /= 2; // Divide the score by two when the player loses
+    });
+    respostasCorretas.add(false);
+    if (nota >= 6) {
+      _mostrarDialogo(
+        'Resposta Errada!',
+        'Você perdeu! Mas pelo menos você tirou ${nota.toStringAsFixed(2)}! Ainda da para passar ein!',
+        reiniciar: true,
+      );
+    } else {
+      _mostrarDialogo(
+        'Resposta Errada!',
+        'Você perdeu! Sua nota final: ${nota.toStringAsFixed(2)}.',
+        reiniciar: true,
+      );
     }
   }
+}
 
   void _mostrarDialogo(String titulo, String mensagem, {bool continuar = false, bool reiniciar = false}) {
     showDialog(
@@ -706,6 +709,10 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
   @override
   Widget build(BuildContext context) {
     final pergunta = perguntas[perguntaAtual];
+    double notaSeErrar = (nota / 2).clamp(0, 10);
+    double notaSeParar = nota;
+    double notaSeAcertar = ((10 * (pontos + (perguntaAtual < 5 ? 1 : perguntaAtual < 10 ? 2 : perguntaAtual < 15 ? 4 : 5)) / 40)).clamp(0, 10);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Pergunta ${perguntaAtual + 1}'),
@@ -731,6 +738,16 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
                 ),
               );
             }),
+            const SizedBox(height: 20),
+            // Exibe os indicadores de nota
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildNotaIndicator('Nota se Errar', notaSeErrar),
+                _buildNotaIndicator('Nota se Parar', notaSeParar),
+                _buildNotaIndicator('Nota se Acertar', notaSeAcertar),
+              ],
+            ),
             const SizedBox(height: 20),
             // Exibe os botões abaixo das alternativas
             Column(
@@ -766,6 +783,35 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildNotaIndicator(String label, double nota) {
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: Colors.blueAccent,
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            nota.toStringAsFixed(2),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
+          ),
+        ],
       ),
     );
   }
