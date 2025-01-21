@@ -210,7 +210,106 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
       ],
       'correta': 0,
     },
-    // Adicione mais perguntas...
+    {
+      'texto': 'O que é um processador multi-core?',
+      'alternativas': [
+        'Um processador com múltiplos núcleos de processamento.',
+        'Um processador com múltiplas unidades de memória.',
+        'Um processador com múltiplas unidades de entrada e saída.',
+        'Um processador com múltiplas unidades de controle.',
+      ],
+      'correta': 0,
+    },
+    {
+      'texto': 'Qual é a função da memória cache?',
+      'alternativas': [
+        'Armazenar dados permanentemente.',
+        'Armazenar dados temporariamente para acesso rápido.',
+        'Processar dados gráficos.',
+        'Controlar os periféricos do sistema.',
+      ],
+      'correta': 1,
+    },
+    {
+      'texto': 'O que é um pipeline em arquitetura de computadores?',
+      'alternativas': [
+        'Uma técnica para aumentar a velocidade de processamento.',
+        'Uma técnica para aumentar a capacidade de armazenamento.',
+        'Uma técnica para aumentar a qualidade gráfica.',
+        'Uma técnica para aumentar a segurança do sistema.',
+      ],
+      'correta': 0,
+    },
+    {
+      'texto': 'Qual é a função de um controlador de memória?',
+      'alternativas': [
+        'Gerenciar a comunicação entre a CPU e a memória.',
+        'Gerenciar a comunicação entre a CPU e os dispositivos de entrada.',
+        'Gerenciar a comunicação entre a CPU e os dispositivos de saída.',
+        'Gerenciar a comunicação entre a CPU e os dispositivos de armazenamento.',
+      ],
+      'correta': 0,
+    },
+    {
+      'texto': 'O que é um registrador em um processador?',
+      'alternativas': [
+        'Uma pequena unidade de armazenamento dentro da CPU.',
+        'Uma unidade de armazenamento externa à CPU.',
+        'Uma unidade de processamento gráfico.',
+        'Uma unidade de controle de periféricos.',
+      ],
+      'correta': 0,
+    },
+    {
+      'texto': 'Qual é a função de um barramento de dados?',
+      'alternativas': [
+        'Transportar dados entre diferentes componentes do computador.',
+        'Armazenar dados permanentemente.',
+        'Processar dados gráficos.',
+        'Controlar os periféricos do sistema.',
+      ],
+      'correta': 0,
+    },
+    {
+      'texto': 'O que é um sistema de memória virtual?',
+      'alternativas': [
+        'Um sistema que permite a execução de programas maiores que a memória física.',
+        'Um sistema que permite a execução de programas menores que a memória física.',
+        'Um sistema que permite a execução de programas gráficos.',
+        'Um sistema que permite a execução de programas de controle de periféricos.',
+      ],
+      'correta': 0,
+    },
+    {
+      'texto': 'Qual é a função de um disco rígido (HD)?',
+      'alternativas': [
+        'Armazenar dados permanentemente.',
+        'Armazenar dados temporariamente para acesso rápido.',
+        'Processar dados gráficos.',
+        'Controlar os periféricos do sistema.',
+      ],
+      'correta': 0,
+    },
+    {
+      'texto': 'O que é um SSD?',
+      'alternativas': [
+        'Um dispositivo de armazenamento de estado sólido.',
+        'Um dispositivo de armazenamento de disco rígido.',
+        'Um dispositivo de armazenamento de fita magnética.',
+        'Um dispositivo de armazenamento óptico.',
+      ],
+      'correta': 0,
+    },
+    {
+      'texto': 'Qual é a função de um sistema operacional?',
+      'alternativas': [
+        'Gerenciar os recursos do computador.',
+        'Armazenar dados permanentemente.',
+        'Processar dados gráficos.',
+        'Controlar os periféricos do sistema.',
+      ],
+      'correta': 0,
+    },
   ];
 
   int perguntaAtual = 0;
@@ -225,7 +324,8 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   List<bool> respostasCorretas = [];
   List<bool> alternativasInativas = [false, false, false, false]; // Para desabilitar alternativas erradas
   int questoesRespondidas = 0; // Adicionar variável para contar questões respondidas
-  int nota = 0; // Adicionar variável para a nota
+  double nota = 0; // Adicionar variável para a nota como decimal
+  int pontos = 0; // Adicionar variável para os pontos
 
   void iniciarCronometro() {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -243,7 +343,7 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   void _tempoEsgotado() {
     _mostrarDialogo(
       'Tempo esgotado!',
-      'Você perdeu! Sua nota final: $nota.',
+      'Você perdeu! Sua nota final: ${nota.toStringAsFixed(2)}.',
       reiniciar: true,
     );
   }
@@ -259,19 +359,36 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
     if (index == perguntas[perguntaAtual]['correta']) {
       setState(() {
         questoesRespondidas++; // Incrementar questões respondidas
-        nota = (10 * questoesRespondidas / perguntas.length).round(); // Calcular a nota
+        if (perguntaAtual < 5) {
+          pontos += 1; // Primeira rodada
+        } else if (perguntaAtual < 10) {
+          pontos += 2; // Segunda rodada
+        } else if (perguntaAtual < 15) {
+          pontos += 4; // Terceira rodada
+        } else {
+          pontos += 5; // Pergunta final
+        }
+        nota = (10 * pontos / 40).clamp(0, 10); // Calcular a nota com base nos pontos e limitar a 10
         respostasCorretas.add(true);
       });
-      _mostrarDialogo(
-        'Resposta Correta!',
-        'Sua nota atual: $nota.',
-        continuar: true,
-      );
+      if (nota >= 10) {
+        _mostrarDialogo(
+          'Parabéns!',
+          'Você tirou ${nota.toStringAsFixed(2)} na prova de AOC! Agora não precisa sofrer tanto com os trabalhos!!!',
+          reiniciar: true,
+        );
+      } else {
+        _mostrarDialogo(
+          'Resposta Correta!',
+          'Sua nota atual: ${nota.toStringAsFixed(2)}.',
+          continuar: true,
+        );
+      }
     } else {
       respostasCorretas.add(false);
       _mostrarDialogo(
         'Resposta Errada!',
-        'Você perdeu! Sua nota final: $nota.',
+        'Você perdeu! Sua nota final: ${nota.toStringAsFixed(2)}.',
         reiniciar: true,
       );
     }
@@ -316,10 +433,10 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
       bloqueio = false;
       alternativasInativas = [false, false, false, false]; // Reativa todas as alternativas
     });
-    if (perguntaAtual >= perguntas.length) {
+    if (perguntaAtual >= perguntas.length || nota >= 10) {
       _mostrarDialogo(
         'Parabéns!',
-        'Você concluiu o jogo com nota $nota!',
+        'Você tirou ${nota.toStringAsFixed(2)} na prova de AOC! Agora não precisa sofrer tanto com os trabalhos!!!',
         reiniciar: true,
       );
     } else {
@@ -462,10 +579,10 @@ void _ajudaUniversitarios() {
       bloqueio = false;
       alternativasInativas = [false, false, false, false]; // Reativa todas as alternativas
     });
-    if (perguntaAtual >= perguntas.length) {
+    if (perguntaAtual >= perguntas.length || nota >= 10) {
       _mostrarDialogo(
         'Parabéns!',
-        'Você concluiu o jogo com nota $nota!',
+        'Você concluiu o jogo com nota ${nota.toStringAsFixed(2)}!',
         reiniciar: true,
       );
     } else {
@@ -499,7 +616,7 @@ void _ajudaUniversitarios() {
               Navigator.of(ctx).pop();
               _mostrarDialogo(
                 'Você Parou!',
-                'Sua nota final: $nota. Obrigado por jogar!',
+                'Sua nota final: ${nota.toStringAsFixed(2)}. Obrigado por jogar!',
                 reiniciar: true,
               );
             },
