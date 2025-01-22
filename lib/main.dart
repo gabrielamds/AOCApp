@@ -835,26 +835,56 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
               const SizedBox(height: 20),
               // Exibe os botões abaixo das alternativas
               Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _buildButton('Tentar a Sorte', tentarSorteDisponivel ? _usarCarta : null),
-                      const SizedBox(height: 10),
-                      _buildButton('Pular Questão (${pulosRestantes})', pulosRestantes > 0 ? _pularQuestao : null),
-                      const SizedBox(height: 10),
-                      _buildButton('Ajuda da Professora', ajudaProfessoraDisponivel ? _ajudaProfessora : null),
-                      const SizedBox(height: 10),
-                      _buildButton('Ajuda dos Universitários', ajudaUniversitariosDisponivel ? _ajudaUniversitarios : null),
-                      const SizedBox(height: 10),
-                      _buildButton('Parar', _parar),
-                    ],
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildSmallButton('Tentar a Sorte', tentarSorteDisponivel ? _usarCarta : null),
+                        _buildSmallButton('Pular Questão (${pulosRestantes})', pulosRestantes > 0 ? _pularQuestao : null),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildSmallButton('Ajuda da Professora', ajudaProfessoraDisponivel ? _ajudaProfessora : null),
+                        _buildSmallButton('Ajuda dos Universitários', ajudaUniversitariosDisponivel ? _ajudaUniversitarios : null),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Center(
+                      child: _buildButton('Parar', _parar),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSmallButton(String text, VoidCallback? onPressed) {
+    return SizedBox(
+      width: 150,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: Color(0xFF383A65),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        child: Text(text, textAlign: TextAlign.center),
       ),
     );
   }
