@@ -759,30 +759,25 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
                 child: Container(
                   width: 52,
                   height: 52,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 3),
-                    color: Colors.white.withOpacity(0.2),
-                  ),
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
+                      CircularProgressIndicator(
+                        value: 1.0,
+                        strokeWidth: 6.0,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+                      ),
+                      CircularProgressIndicator(
+                        value: segundosRestantes / 45,
+                        strokeWidth: 6.0,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
                       Text(
                         '$segundosRestantes',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
-                        ),
-                      ),
-                      Positioned(
-                        top: 0,
-                        child: Container(
-                          width: 52,
-                          height: 52,
-                          child: CustomPaint(
-                            painter: TimerPainter(segundosRestantes: segundosRestantes),
-                          ),
                         ),
                       ),
                     ],
