@@ -37,7 +37,7 @@ class TelaInicial extends StatelessWidget {
             height: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF383A65), Color.from(alpha: 1, red: 0.325, green: 0.337, blue: 0.522)],
+                colors: [Color(0xFF383A65), Color.fromARGB(255, 83, 86, 133)],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -69,32 +69,42 @@ class TelaInicial extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 50),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const TelaPerguntas()),
-                    );
-                  },
-                  child: const Text('Iniciar Jogo'),
-                ),
+                _buildButton(context, 'Iniciar Jogo', () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const TelaPerguntas()),
+                  );
+                }),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    _mostrarInstrucoes(context);
-                  },
-                  child: const Text('Instruções'),
-                ),
+                _buildButton(context, 'Instruções', () {
+                  _mostrarInstrucoes(context);
+                }),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () => exit(0), // Exit the application
-                  child: const Text('Sair'),
-                ),
+                _buildButton(context, 'Sair', () => exit(0)),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildButton(BuildContext context, String text, VoidCallback onPressed) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: Color(0xFF383A65),
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        textStyle: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      child: Text(text),
     );
   }
 
@@ -797,8 +807,16 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
                   child: ElevatedButton(
                     onPressed: alternativasInativas[index] ? null : () => _responder(index),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFD8D5EA),
-                      foregroundColor: Colors.black,
+                      backgroundColor: Colors.white,
+                      foregroundColor: Color(0xFF383A65),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     child: Text(pergunta['alternativas'][index]),
                   ),
@@ -821,50 +839,15 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      ElevatedButton(
-                        onPressed: tentarSorteDisponivel ? _usarCarta : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFD8D5EA),
-                          foregroundColor: Colors.black,
-                        ),
-                        child: const Text('Tentar a Sorte'),
-                      ),
+                      _buildButton('Tentar a Sorte', tentarSorteDisponivel ? _usarCarta : null),
                       const SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: pulosRestantes > 0 ? _pularQuestao : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFD8D5EA),
-                          foregroundColor: Colors.black,
-                        ),
-                        child: Text('Pular Questão (${pulosRestantes})'),
-                      ),
+                      _buildButton('Pular Questão (${pulosRestantes})', pulosRestantes > 0 ? _pularQuestao : null),
                       const SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: ajudaProfessoraDisponivel ? _ajudaProfessora : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFD8D5EA),
-                          foregroundColor: Colors.black,
-                        ),
-                        child: const Text('Ajuda da Professora'),
-                      ),
+                      _buildButton('Ajuda da Professora', ajudaProfessoraDisponivel ? _ajudaProfessora : null),
                       const SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: ajudaUniversitariosDisponivel ? _ajudaUniversitarios : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFDBD7F1),
-                          foregroundColor: Colors.black,
-                        ),
-                        child: const Text('Ajuda dos Universitários'),
-                      ),
+                      _buildButton('Ajuda dos Universitários', ajudaUniversitariosDisponivel ? _ajudaUniversitarios : null),
                       const SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: _parar,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFD8D5EA),
-                          foregroundColor: Colors.black,
-                        ),
-                        child: const Text('Parar'),
-                      ),
+                      _buildButton('Parar', _parar),
                     ],
                   ),
                 ),
@@ -873,6 +856,25 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildButton(String text, VoidCallback? onPressed) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: Color(0xFF383A65),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        textStyle: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      child: Text(text),
     );
   }
 
