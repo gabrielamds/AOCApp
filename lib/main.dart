@@ -15,7 +15,7 @@ class QuemQuerSerEngenheiro extends StatelessWidget {
     return MaterialApp(
       title: 'Quem Quer Ser um Engenheiro?',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF383A65)),
         useMaterial3: true,
       ),
       home: const TelaInicial(),
@@ -30,51 +30,70 @@ class TelaInicial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue, Colors.lightBlueAccent],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Quem Quer Ser um Engenheiro?',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+      body: Stack(
+        children: [
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF383A65), Color.from(alpha: 1, red: 0.325, green: 0.337, blue: 0.522)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
-              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 50),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const TelaPerguntas()),
-                );
-              },
-              child: const Text('Iniciar Jogo'),
+          ),
+          Positioned(
+            top: -271,
+            left: -24,
+            child: Container(
+              width: 542,
+              height: 542,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color(0xFF383A65).withOpacity(0.5),
+              ),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                _mostrarInstrucoes(context);
-              },
-              child: const Text('Instruções'),
+          ),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Quem Quer Ser um Engenheiro?',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 50),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const TelaPerguntas()),
+                    );
+                  },
+                  child: const Text('Iniciar Jogo'),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    _mostrarInstrucoes(context);
+                  },
+                  child: const Text('Instruções'),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () => exit(0), // Exit the application
+                  child: const Text('Sair'),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => exit(0), // Exit the application
-              child: const Text('Sair'),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -653,7 +672,7 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
           width: double.infinity,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.blue, Colors.lightBlueAccent],
+              colors: [Color(0xFF383A65), Color(0xFF676BBD)],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
@@ -718,79 +737,156 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
       appBar: AppBar(
         title: Text('Pergunta ${perguntaAtual + 1}'),
         centerTitle: true,
+        backgroundColor: Color(0xFF383A65),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              pergunta['texto'],
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 20),
-            // Exibe as alternativas
-            ...List.generate(pergunta['alternativas'].length, (index) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: ElevatedButton(
-                  onPressed: alternativasInativas[index] ? null : () => _responder(index),
-                  child: Text(pergunta['alternativas'][index]),
-                ),
-              );
-            }),
-            const SizedBox(height: 20),
-            // Exibe os indicadores de nota
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildNotaIndicator('Nota se Errar', notaSeErrar),
-                _buildNotaIndicator('Nota se Parar', notaSeParar),
-                _buildNotaIndicator('Nota se Acertar', notaSeAcertar),
-              ],
-            ),
-            const SizedBox(height: 20),
-            // Exibe o cronômetro
-            Text(
-              'Tempo: $segundosRestantes s',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            // Exibe os botões abaixo das alternativas
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ElevatedButton(
-                      onPressed: tentarSorteDisponivel ? _usarCarta : null,
-                      child: const Text('Tentar a Sorte'),
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: pulosRestantes > 0 ? _pularQuestao : null,
-                      child: Text('Pular Questão (${pulosRestantes})'),
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: ajudaProfessoraDisponivel ? _ajudaProfessora : null,
-                      child: const Text('Ajuda da Professora'),
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: ajudaUniversitariosDisponivel ? _ajudaUniversitarios : null,
-                      child: const Text('Ajuda dos Universitários'),
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: _parar,
-                      child: const Text('Parar'),
-                    ),
-                  ],
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF383A65), Color(0xFF383A65)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Exibe o cronômetro
+              Center(
+                child: Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 3),
+                    color: Colors.white.withOpacity(0.2),
+                  ),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Text(
+                        '$segundosRestantes',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Positioned(
+                        top: 2,
+                        child: Container(
+                          width: 52,
+                          height: 52,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white.withOpacity(0.2), width: 3),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 0,
+                        child: Container(
+                          width: 52,
+                          height: 52,
+                          child: CustomPaint(
+                            painter: TimerPainter(segundosRestantes: segundosRestantes),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              Text(
+                pergunta['texto'],
+                style: const TextStyle(fontSize: 18, color: Colors.white),
+              ),
+              const SizedBox(height: 20),
+              // Exibe as alternativas
+              ...List.generate(pergunta['alternativas'].length, (index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: ElevatedButton(
+                    onPressed: alternativasInativas[index] ? null : () => _responder(index),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFD8D5EA),
+                      foregroundColor: Colors.black,
+                    ),
+                    child: Text(pergunta['alternativas'][index]),
+                  ),
+                );
+              }),
+              const SizedBox(height: 20),
+              // Exibe os indicadores de nota
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildNotaIndicator('Errar', notaSeErrar),
+                  _buildNotaIndicator('Parar', notaSeParar),
+                  _buildNotaIndicator('Acertar', notaSeAcertar),
+                ],
+              ),
+              const SizedBox(height: 20),
+              // Exibe os botões abaixo das alternativas
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ElevatedButton(
+                        onPressed: tentarSorteDisponivel ? _usarCarta : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFFD8D5EA),
+                          foregroundColor: Colors.black,
+                        ),
+                        child: const Text('Tentar a Sorte'),
+                      ),
+                      const SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: pulosRestantes > 0 ? _pularQuestao : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFFD8D5EA),
+                          foregroundColor: Colors.black,
+                        ),
+                        child: Text('Pular Questão (${pulosRestantes})'),
+                      ),
+                      const SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: ajudaProfessoraDisponivel ? _ajudaProfessora : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFFD8D5EA),
+                          foregroundColor: Colors.black,
+                        ),
+                        child: const Text('Ajuda da Professora'),
+                      ),
+                      const SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: ajudaUniversitariosDisponivel ? _ajudaUniversitarios : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFFDBD7F1),
+                          foregroundColor: Colors.black,
+                        ),
+                        child: const Text('Ajuda dos Universitários'),
+                      ),
+                      const SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: _parar,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFFD8D5EA),
+                          foregroundColor: Colors.black,
+                        ),
+                        child: const Text('Parar'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -800,7 +896,7 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
     return Container(
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: Colors.blueAccent,
+        color: Color(0xFFD8D5EA),
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Column(
@@ -808,7 +904,7 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
           Text(
             label,
             style: const TextStyle(
-              color: Colors.white,
+              color: Color(0xFF505054),
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -816,12 +912,44 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
           Text(
             nota.toStringAsFixed(2),
             style: const TextStyle(
-              color: Colors.white,
+              color: Color(0xFF505054),
               fontSize: 16,
             ),
           ),
         ],
       ),
     );
+  }
+}
+
+class TimerPainter extends CustomPainter {
+  final int segundosRestantes;
+
+  TimerPainter({required this.segundosRestantes});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 3
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2;
+    final angle = 2 * pi * (segundosRestantes / 45);
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -pi / 2,
+      angle,
+      false,
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }
