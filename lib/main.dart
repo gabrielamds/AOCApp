@@ -909,30 +909,35 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
   }
 
   Widget _buildNotaIndicator(String label, double nota) {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: Color(0xFFD8D5EA),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Column(
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              color: Color(0xFF505054),
-              fontWeight: FontWeight.bold,
+    return SizedBox(
+      width: 100,
+      height: 80,
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Color(0xFFD8D5EA),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                color: Color(0xFF505054),
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            nota.toStringAsFixed(2),
-            style: const TextStyle(
-              color: Color(0xFF505054),
-              fontSize: 16,
+            const SizedBox(height: 4),
+            Text(
+              nota.toStringAsFixed(2),
+              style: const TextStyle(
+                color: Color(0xFF505054),
+                fontSize: 16,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
