@@ -776,17 +776,6 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
                         ),
                       ),
                       Positioned(
-                        top: 2,
-                        child: Container(
-                          width: 52,
-                          height: 52,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white.withOpacity(0.2), width: 3),
-                          ),
-                        ),
-                      ),
-                      Positioned(
                         top: 0,
                         child: Container(
                           width: 52,
