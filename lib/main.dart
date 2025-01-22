@@ -749,120 +749,125 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
         centerTitle: true,
         backgroundColor: Color(0xFF383A65),
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF383A65), Color(0xFF383A65)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Exibe o cronômetro
-              Center(
-                child: Container(
-                  width: 52,
-                  height: 52,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      CircularProgressIndicator(
-                        value: 1.0,
-                        strokeWidth: 6.0,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          return Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF383A65), Color(0xFF383A65)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Exibe o cronômetro
+                  Center(
+                    child: Container(
+                      width: 52,
+                      height: 52,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          CircularProgressIndicator(
+                            value: 1.0,
+                            strokeWidth: 6.0,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+                          ),
+                          CircularProgressIndicator(
+                            value: segundosRestantes / 45,
+                            strokeWidth: 6.0,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                          Text(
+                            '$segundosRestantes',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
                       ),
-                      CircularProgressIndicator(
-                        value: segundosRestantes / 45,
-                        strokeWidth: 6.0,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                      Text(
-                        '$segundosRestantes',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    pergunta['texto'],
+                    style: const TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                  const SizedBox(height: 20),
+                  // Exibe as alternativas
+                  ...List.generate(pergunta['alternativas'].length, (index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: ElevatedButton(
+                        onPressed: alternativasInativas[index] ? null : () => _responder(index),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Color(0xFF2E2E2E),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          textStyle: const TextStyle(
+                            fontSize: 12, // Reduced font size
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
+                        child: Text(
+                          pergunta['alternativas'][index],
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  }),
+                  const SizedBox(height: 20),
+                  // Exibe os indicadores de nota
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildNotaIndicator('Errar', notaSeErrar),
+                      _buildNotaIndicator('Parar', notaSeParar),
+                      _buildNotaIndicator('Acertar', notaSeAcertar),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  // Exibe os botões abaixo das alternativas
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildSmallButton('Tentar a Sorte', tentarSorteDisponivel ? _usarCarta : null),
+                          _buildSmallButton('Pular Questão (${pulosRestantes})', pulosRestantes > 0 ? _pularQuestao : null),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildSmallButton('Ajuda da Professora', ajudaProfessoraDisponivel ? _ajudaProfessora : null),
+                          _buildSmallButton('Ajuda dos Universitários', ajudaUniversitariosDisponivel ? _ajudaUniversitarios : null),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Center(
+                        child: _buildButton('Parar', _parar),
                       ),
                     ],
                   ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                pergunta['texto'],
-                style: const TextStyle(fontSize: 18, color: Colors.white),
-              ),
-              const SizedBox(height: 20),
-              // Exibe as alternativas
-              ...List.generate(pergunta['alternativas'].length, (index) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: ElevatedButton(
-                    onPressed: alternativasInativas[index] ? null : () => _responder(index),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Color(0xFF383A65),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      textStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    child: Text(pergunta['alternativas'][index]),
-                  ),
-                );
-              }),
-              const SizedBox(height: 20),
-              // Exibe os indicadores de nota
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildNotaIndicator('Errar', notaSeErrar),
-                  _buildNotaIndicator('Parar', notaSeParar),
-                  _buildNotaIndicator('Acertar', notaSeAcertar),
                 ],
               ),
-              const SizedBox(height: 20),
-              // Exibe os botões abaixo das alternativas
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildSmallButton('Tentar a Sorte', tentarSorteDisponivel ? _usarCarta : null),
-                        _buildSmallButton('Pular Questão (${pulosRestantes})', pulosRestantes > 0 ? _pularQuestao : null),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildSmallButton('Ajuda da Professora', ajudaProfessoraDisponivel ? _ajudaProfessora : null),
-                        _buildSmallButton('Ajuda dos Universitários', ajudaUniversitariosDisponivel ? _ajudaUniversitarios : null),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Center(
-                      child: _buildButton('Parar', _parar),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
