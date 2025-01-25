@@ -427,6 +427,13 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   double nota = 0; // Adicionar variável para a nota como decimal
   int pontos = 0; // Adicionar variável para os pontos
 
+  @override
+  void initState() {
+    super.initState();
+    perguntas.shuffle(); // Shuffle the questions to make them appear in a random order
+    iniciarCronometro();
+  }
+
   void iniciarCronometro() {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (segundosRestantes == 0) {
@@ -793,12 +800,6 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
     (route) => false,
   );
 }
-
-  @override
-  void initState() {
-    super.initState();
-    iniciarCronometro();
-  }
 
   @override
   void dispose() {
