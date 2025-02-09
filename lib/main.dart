@@ -156,6 +156,7 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   int questoesRespondidas = 0; // Adicionar variável para contar questões respondidas
   double nota = 0; // Adicionar variável para a nota como decimal
   int pontos = 0; // Adicionar variável para os pontos
+  bool mostrarRespostaCorreta = false; // Adicionar variável para controlar a exibição da resposta correta
 
   @override
   void initState() {
@@ -223,25 +224,18 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
     } else {
       setState(() {
         nota /= 2; // Divide the score by two when the player loses
+        mostrarRespostaCorreta = true; // Ativar a exibição da resposta correta
       });
       respostasCorretas.add(false);
-      if (nota >= 6) {
-        _mostrarDialogo(
-          'Resposta Errada!',
-          'Você perdeu! Mas pelo menos você tirou ${nota.toStringAsFixed(2)}! Ainda da para passar ein!',
-          reiniciar: true,
-        );
-      } else {
-        _mostrarDialogo(
-          'Resposta Errada!',
-          'Você perdeu! Sua nota final: ${nota.toStringAsFixed(2)}.',
-          reiniciar: true,
-        );
-      }
+      _mostrarDialogo(
+        'Resposta Errada!',
+        'Você perdeu! Sua nota final: ${nota.toStringAsFixed(2)}.',
+        mostrarRespostaCorreta: true,
+      );
     }
   }
 
-  void _mostrarDialogo(String titulo, String mensagem, {bool continuar = false, bool reiniciar = false}) {
+  void _mostrarDialogo(String titulo, String mensagem, {bool continuar = false, bool reiniciar = false, bool mostrarRespostaCorreta = false}) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -268,9 +262,29 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
               },
               child: const Text('Voltar ao Início'),
             ),
+          if (mostrarRespostaCorreta)
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+                _mostrarRespostaCorreta();
+              },
+              child: const Text('Ver a Resposta Correta'),
+            ),
         ],
       ),
     );
+  }
+
+  void _mostrarRespostaCorreta() {
+    setState(() {
+      alternativasInativas = [true, true, true, true];
+      alternativasInativas[perguntas[perguntaAtual]['correta']] = false;
+      tentarSorteDisponivel = false;
+      ajudaProfessoraDisponivel = false;
+      ajudaUniversitariosDisponivel = false;
+      pulosRestantes = 0;
+      bloqueio = true;
+    });
   }
 
   void _proximaPergunta() {
@@ -279,6 +293,7 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
       segundosRestantes = 45;
       bloqueio = false;
       alternativasInativas = [false, false, false, false]; // Reativa todas as alternativas
+      mostrarRespostaCorreta = false; // Desativar a exibição da resposta correta
     });
     if (perguntaAtual >= perguntas.length || nota >= 10) {
       _mostrarTelaFinal(
@@ -445,6 +460,8 @@ void _ajudaUniversitarios() {
 }
 
   void _parar() {
+    if (mostrarRespostaCorreta) return; // Desativa a opção "Parar" quando a resposta correta está sendo mostrada
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -610,7 +627,7 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
                       child: ElevatedButton(
                         onPressed: alternativasInativas[index] ? null : () => _responder(index),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
+                          backgroundColor: mostrarRespostaCorreta && index == perguntas[perguntaAtual]['correta'] ? Colors.green : Colors.white,
                           foregroundColor: Color(0xFF2E2E2E),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
@@ -660,7 +677,7 @@ void _mostrarTelaFinal(BuildContext context, String mensagem) {
                       ),
                       const SizedBox(height: 10),
                       Center(
-                        child: _buildButton('Parar', _parar),
+                        child: _buildButton('Parar', mostrarRespostaCorreta ? null : _parar),
                       ),
                     ],
                   ),
