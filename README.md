@@ -12,7 +12,7 @@ Laura da S. Morgado
 
 ## Descrição
 
-"Quem Quer Ser um Engenheiro?" é um aplicativo de perguntas e respostas desenvolvido em Flutter. O objetivo do jogo é responder corretamente às perguntas para acumular pontos e se formar como engenheiro. O jogo apresenta perguntas de diferentes níveis de dificuldade, que são exibidas de forma randômica, mas por ordem de dificuldade.
+Este projeto apresenta o desenvolvimento de um jogo interativo para dispositivos móveis intitulado "Quem Quer Ser um Engenheiro?", inspirado no formato do programa "Show do Milhão". O objetivo é ensinar conceitos de Arquitetura e Organização de Computadores (AOC) de maneira lúdica e acessível, abordando temas como periféricos de entrada/saída, memória e armazenamento. Por meio de perguntas e respostas estruturadas, o protótipo busca promover a compreensão teórica e prática de tais conceitos, incentivando o aprendizado e a participação ativa dos usuários.
 
 ## Funcionalidades
 
