@@ -52,3 +52,5 @@ Este projeto apresenta o desenvolvimento de um jogo interativo para dispositivos
 Link para o resumo expandido: [https://docs.google.com/document/d/1LcZJoOqnViOdpp9ozwxqrTaVPsbPrYl-2ojPoHu7zdk/edit?tab=t.0]
 
 Link do vídeo de apresentação: [https://youtu.be/hIv5-92HtS4]
+
+Link para o executável do aplicativo: [https://drive.google.com/file/d/1UlXUX4d5xUrD6v5yWyR5ayXtYJjHkPUa/view?usp=drive_link]
