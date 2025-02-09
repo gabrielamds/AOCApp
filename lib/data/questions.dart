@@ -1,5 +1,6 @@
 List<Map<String, dynamic>> getPerguntas() {
   return [
+    // Questões fáceis
     {
       'texto': 'Qual é a principal função de um dispositivo de entrada?',
       'alternativas': [
@@ -100,6 +101,7 @@ List<Map<String, dynamic>> getPerguntas() {
       ],
       'correta': 0,
     },
+    // Questões médias
     {
       'texto': 'Por que a memória cache é mais eficiente que a RAM para determinadas tarefas?',
       'alternativas': [
@@ -200,6 +202,7 @@ List<Map<String, dynamic>> getPerguntas() {
       ],
       'correta': 1,
     },
+    // Questões difíceis
     {
       'texto': 'Quais são as principais memórias internas de um computador?',
       'alternativas': [
