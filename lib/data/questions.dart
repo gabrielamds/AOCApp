@@ -10,6 +10,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Transmitir dados para outros dispositivos',
       ],
       'correta': 2,
+      'dificuldade': 'facil'
     },
     {
       'texto': 'Qual dos dispositivos abaixo é considerado de armazenamento secundário?',
@@ -20,6 +21,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Unidade de controle',
       ],
       'correta': 2,
+      'dificuldade': 'facil'
     },
     {
       'texto': 'O que caracteriza uma memória volátil?',
@@ -30,6 +32,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'É usada apenas para backup',
       ],
       'correta': 1,
+      'dificuldade': 'facil'
     },
     {
       'texto': 'O que é um SSD?',
@@ -40,6 +43,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Um dispositivo de backup óptico',
       ],
       'correta': 1,
+      'dificuldade': 'facil'
     },
     {
       'texto': 'Qual é o tipo de memória usada no processo de boot do sistema operacional?',
@@ -50,6 +54,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Memória flash',
       ],
       'correta': 1,
+      'dificuldade': 'facil'
     },
     {
       'texto': 'Qual é a principal vantagem da memória cache?',
@@ -60,6 +65,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Reduzir o consumo de energia',
       ],
       'correta': 1,
+      'dificuldade': 'facil'
     },
     {
       'texto': 'O que é latência de memória?',
@@ -70,6 +76,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'A velocidade de transferência de dados',
       ],
       'correta': 0,
+      'dificuldade': 'facil'
     },
     {
       'texto': 'Qual dispositivo combina funções de entrada e saída?',
@@ -80,6 +87,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Scanner',
       ],
       'correta': 1,
+      'dificuldade': 'facil'
     },
     {
       'texto': 'O que diferencia a memória principal da memória secundária?',
@@ -90,6 +98,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'A memória principal utiliza discos magnéticos',
       ],
       'correta': 1,
+      'dificuldade': 'facil'
     },
     {
       'texto': 'Qual é a função principal de um controlador de dispositivos?',
@@ -100,6 +109,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Armazenar arquivos temporários',
       ],
       'correta': 0,
+      'dificuldade': 'facil'
     },
     // Questões médias
     {
@@ -111,6 +121,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Porque utiliza tecnologia magnética',
       ],
       'correta': 1,
+      'dificuldade': 'media'
     },
     {
       'texto': 'Qual dos dispositivos de entrada e saída depende diretamente de uma porta serial para funcionar?',
@@ -121,6 +132,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Memória flash',
       ],
       'correta': 0,
+      'dificuldade': 'media'
     },
     {
       'texto': 'O que significa o termo "ciclo de escrita" em um dispositivo de armazenamento flash?',
@@ -131,6 +143,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'A largura de banda do dispositivo',
       ],
       'correta': 1,
+      'dificuldade': 'media'
     },
     {
       'texto': 'O que acontece quando o barramento de entrada/saída está sobrecarregado?',
@@ -141,6 +154,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Dados armazenados na memória secundária são apagados',
       ],
       'correta': 1,
+      'dificuldade': 'media'
     },
     {
       'texto': 'Qual é a diferença entre dispositivos de armazenamento magnético e de estado sólido?',
@@ -151,6 +165,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Dispositivos magnéticos não são reutilizáveis',
       ],
       'correta': 0,
+      'dificuldade': 'media'
     },
     {
       'texto': 'Qual é a principal função do DMA (Acesso Direto à Memória)?',
@@ -161,6 +176,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Aumentar a largura de banda da memória principal',
       ],
       'correta': 0,
+      'dificuldade': 'media'
     },
     {
       'texto': 'Qual é a vantagem do uso de memória flash em sistemas embarcados?',
@@ -171,6 +187,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Maior velocidade de leitura/escrita em comparação ao SSD',
       ],
       'correta': 2,
+      'dificuldade': 'media'
     },
     {
       'texto': 'O que é o "caching write-back" em sistemas de memória?',
@@ -181,6 +198,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Um método de backup automático',
       ],
       'correta': 1,
+      'dificuldade': 'media'
     },
     {
       'texto': 'Por que dispositivos de armazenamento óptico, como CDs e DVDs, estão se tornando obsoletos?',
@@ -191,6 +209,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Porque não podem ser regravados',
       ],
       'correta': 0,
+      'dificuldade': 'media'
     },
     {
       'texto': 'Em arquiteturas modernas, qual é a função de um controlador RAID?',
@@ -201,6 +220,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Realizar backup em nuvem automaticamente',
       ],
       'correta': 1,
+      'dificuldade': 'media'
     },
     // Questões difíceis
     {
@@ -212,6 +232,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Banco de registradores, memória cache e discos magnéticos',
       ],
       'correta': 2,
+      'dificuldade': 'dificil'
     },
     {
       'texto': 'Quais são os três parâmetros de desempenho de uma memória?',
@@ -222,6 +243,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Tempo de acesso, latência, taxa de transferência',
       ],
       'correta': 3,
+      'dificuldade': 'dificil'
     },
     {
       'texto': 'Quais são os métodos de acesso que podem ser empregados em uma memória cache?',
@@ -232,6 +254,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Acesso aleatório e acesso sequencial',
       ],
       'correta': 3,
+      'dificuldade': 'dificil'
     },
     {
       'texto': 'Quais são as técnicas usadas para implementar a função de mapeamento que dita como a cache é organizada?',
@@ -242,6 +265,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Direta, aleatória, associativa em conjunto',
       ],
       'correta': 0,
+      'dificuldade': 'dificil'
     },
     {
       'texto': 'Qual é o tipo de memória ROM que utiliza radiação ultravioleta para apagar as células?',
@@ -252,6 +276,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Memória DDR-SDRAM',
       ],
       'correta': 0,
+      'dificuldade': 'dificil'
     },
     {
       'texto': 'Como são categorizados os erros em um sistema de memória semicondutora?',
@@ -262,6 +287,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'Erro não permanente e falha permanente',
       ],
       'correta': 3,
+      'dificuldade': 'dificil'
     },
     {
       'texto': 'O que pode ser dizer sobre a memória SDRAM?',
@@ -272,6 +298,7 @@ List<Map<String, dynamic>> getPerguntas() {
         'A SDRAM move apenas dados para fora da memória sob o controle do clock do sistema',
       ],
       'correta': 3,
+      'dificuldade': 'dificil'
     },
   ];
 }

@@ -161,8 +161,39 @@ class _TelaPerguntasState extends State<TelaPerguntas> {
   @override
   void initState() {
     super.initState();
-    perguntas.shuffle(); // Shuffle the questions to make them appear in a random order
+    _selecionarPerguntasPorDificuldade();
     iniciarCronometro();
+  }
+
+  void _selecionarPerguntasPorDificuldade() {
+    List<Map<String, dynamic>> faceis = [];
+    List<Map<String, dynamic>> medias = [];
+    List<Map<String, dynamic>> dificeis = [];
+
+    for (var pergunta in perguntas) {
+      if (pergunta['dificuldade'] == 'facil') {
+        faceis.add(pergunta);
+      } else if (pergunta['dificuldade'] == 'media') {
+        medias.add(pergunta);
+      } else if (pergunta['dificuldade'] == 'dificil') {
+        dificeis.add(pergunta);
+      }
+    }
+
+    faceis.shuffle();
+    medias.shuffle();
+    dificeis.shuffle();
+
+    perguntas.clear();
+    perguntas.addAll(faceis.take(8));
+    perguntas.addAll(medias.take(6));
+    perguntas.addAll(dificeis.take(6));
+
+    // Adicionar logs para verificar a distribuição das questões
+    print('Questões fáceis selecionadas: ${faceis.take(8).length}');
+    print('Questões médias selecionadas: ${medias.take(6).length}');
+    print('Questões difíceis selecionadas: ${dificeis.take(6).length}');
+    print('Total de questões selecionadas: ${perguntas.length}');
   }
 
   void iniciarCronometro() {
