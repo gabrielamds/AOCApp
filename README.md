@@ -1,7 +1,5 @@
 # Quem Quer Ser um Engenheiro?
 
-![App Screenshot](screenshot.png)
-
 ## Desenvolvedores
 
 - **Nome do grupo:** LDGJ
