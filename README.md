@@ -7,10 +7,10 @@
 - **Nome do grupo:** LDGJ
 
 - **Nome dos participantes:**
-Davi Komori Araujo
-Gabriela C. M. dos Santos
-João V. G. Dantas
-Laura da S. Morgado
+- Davi Komori Araujo
+- Gabriela C. M. dos Santos
+- João V. G. Dantas
+- Laura da S. Morgado
 
 ## Descrição
 
@@ -19,9 +19,13 @@ Laura da S. Morgado
 ## Funcionalidades
 
 - 📚**Perguntas Randômicas:** As perguntas são exibidas de forma randômica, mas por ordem de dificuldade.
+- 
 - 🎮**Níveis de Dificuldade:** As perguntas são divididas em três níveis de dificuldade: fácil, médio e difícil.
+- 
 - 🏆**Pontuação e desafios:** Cada pergunta tem uma pontuação, que ajuda a incentivar o aluno a chegar até o final.
+- 
 - 🛠️**Ajudas:** O jogador pode utilizar ajudas como "Tentar a Sorte", "Ajuda da Professora", "Ajuda dos Universitários" e "pular" até 3 questões durante o jogo.
+- 
 - ✅**Exibição da Resposta Correta:** Quando o jogador responde incorretamente, ele pode optar por ver a resposta correta.
 
 ## Tecnologias Utilizadas
@@ -30,8 +34,8 @@ Laura da S. Morgado
 - [Dart](https://dart.dev/): Linguagem de programação utilizada pelo Flutter.
 
 ## Como pegar o executável do aplicativo
-- **Caso precise gerar um apk novo:** no terminal digite: flutter build apk
-
+- **Caso precise gerar um apk novo:** no terminal digite "flutter build apk"
+- 
 - **Siga o seguinte caminho até o arquivo:** build\app\outputs\flutter-apk\app-release.apk
 
 ## Estrutura do Projeto
